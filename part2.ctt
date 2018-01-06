@@ -380,15 +380,3 @@ addAC (a b c : nat) : Path nat (add (add a b) c) (add (add a c) b) = undefined
 
 -- a + (b + c) = b + (a + c)
 addCA (a b c : nat) : Path nat (add a (add b c)) (add b (add a c)) = undefined
-
-
-
-{-
-
-That's all for this lecture. Next time we will do:
-
-  o Examples of higher dimensional compositions
-  o Transport and J for Path types
-  o Fill
-
--}
