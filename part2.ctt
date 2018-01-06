@@ -1,42 +1,11 @@
-{-
-            Lecture 2 on cubicaltt (Cubical Type Theory)
---------------------------------------------------------------------------
-                        Anders Mörtberg
 
-Contents:
-  o Path types part 2 (symmetry and connections)
-  o Compositions
-
-Recall:
-  <i>    <- Path abstraction
-  p @ i  <- Path application
-  refl A a := <i> a
-
--}
 module part2 where
 
 import part1
 
-{-
 
-We have an involutive operation on II that corresponds to:
-
-    -i = 1 - i
-
-for a point i in the real interval [0,1].
-
--}
-
--- This can be used to prove symmetry of Path-equality:
 sym (A : U) (a b : A) (p : Path A a b) : Path A b a = <i> p @ -i
 
--- This operation is an involution, so - - i = i. This gives new
--- judgmental equalities, in particular sym A b a (sym A a b p) is
--- judgmentally equality to p. This is not true in standard type
--- theory where sym would be defined by induction on p. This is useful
--- for formalizing mathematics, for example we get the judgmental
--- equality C^op^op = C for a category C that cannot be obtained in
--- standard type theory with the standard definition of category.
 
 
 {-
@@ -195,7 +164,7 @@ Exercise: draw the squares for
             ^                    ^
             |                    |
             |                    |
-      <j> b |  <i j> p @ i \/ j  | p
+      <j> b |  <i j> p @ -i \/ j | p
             |                    |
             |                    |
             |                    |
@@ -213,7 +182,7 @@ Exercise: draw the squares for
             ^                    ^
             |                    |
             |                    |
-      <j> b |  <i j> p @ i \/ j  | <j> p @ -j
+      <j> b |  <i j> p @ -i \/ -j| <j> p @ -j
             |                    |
             |                    |
             |                    |
