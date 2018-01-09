@@ -115,4 +115,6 @@ isofhlevel2ToSet (A : U) : isofhlevel A (suc (suc zero)) -> isSet A =
 setToIsofhlevel2 (A : U) : isSet A -> isofhlevel A (suc (suc zero)) = undefined
 
 
-isContrProp (A : U) (h : isContr A) : isProp A = (inhPropToIsContr A h).2
+isContrProp (A : U) (h : isContr A) : isProp A =
+    \(x y : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 x,
+                                         (i = 1) -> h.2 y ]
