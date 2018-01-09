@@ -284,7 +284,7 @@ writing the comp after a path-abstraction). The direction j that we
 are doing the composition in is implicit, more about this below.
 
 -}
-trans (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c =
+transitivity (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c =
   <i> comp (<_> A) (p @ i)
                    [ (i = 0) -> <j> a
                    , (i = 1) -> q ]
@@ -369,12 +369,12 @@ addC3 (a b c : nat) : Path nat (add a (add b c)) (add a (add c b)) =
 
 -- (a + b) + c = a + (c + b)
 lemma1 (a b c : nat) : Path nat (add (add a b) c) (add a (add c b)) =
-  trans nat (add (add a b) c) (add a (add b c)) (add a (add c b)) (addA' a b c) (addC3 a b c)
+  transitivity nat (add (add a b) c) (add a (add b c)) (add a (add c b)) (addA' a b c) (addC3 a b c)
 
 
 -- (a + b) + c = (a + c) + b
 addAC (a b c : nat) : Path nat (add (add a b) c) (add (add a c) b) =
-  trans nat (add (add a b) c) (add a (add c b)) (add (add a c) b) (lemma1 a b c) (addA a c b)
+  transitivity nat (add (add a b) c) (add a (add c b)) (add (add a c) b) (lemma1 a b c) (addA a c b)
 
 -- (a + b) + c = (b + a) + c
 lemma2 (a b c : nat) : Path nat (add (add a b) c) (add (add b a) c) =
@@ -382,8 +382,8 @@ lemma2 (a b c : nat) : Path nat (add (add a b) c) (add (add b a) c) =
 
 -- a + (b + c) = (b + a) + c
 lemma3 (a b c : nat) : Path nat (add a (add b c)) (add (add b a) c) =
-  trans nat (add a (add b c)) (add (add a b) c) (add (add b a) c) (addA a b c) (lemma2 a b c)
+  transitivity nat (add a (add b c)) (add (add a b) c) (add (add b a) c) (addA a b c) (lemma2 a b c)
 
 -- a + (b + c) = (a + b) + c = (b + a) + c = b + (a + c)
 addCA (a b c : nat) : Path nat (add a (add b c)) (add b (add a c)) =
-  trans nat (add a (add b c)) (add (add b a) c) (add b (add a c)) (lemma3 a b c) (addA' b a c)
+  transitivity nat (add a (add b c)) (add (add b a) c) (add b (add a c)) (lemma3 a b c) (addA' b a c)

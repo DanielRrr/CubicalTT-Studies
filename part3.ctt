@@ -1,0 +1,114 @@
+
+module part3 where
+
+import part2
+
+
+ex (A : U) (a b : A) (p : Path A a b) :
+  Path (Path A a a) (compinv A a b p) (<j> a) =
+  <k j> comp (<_> A) (p @ j /\ -k)
+                     [ (j = 0) -> <i> a
+                     , (j = 1) -> <i> p @ -i /\ -k
+                     , (k = 1) -> <i> a ]
+
+
+ex (A : U) (a b : A) (p : Path A a b) :
+  Path (Path A a a) (compinv A a b p) (<j> a) =
+  <k j> comp (<_> A) (p @ j /\ -k)
+                     [ (j = 0) -> <_> a
+                     , (j = 1) -> <i> p @ -i /\ -k
+                     , (k = 0) -> fill (<_> A) (p @ j)
+                                       [ (j = 0) -> <i> a
+                                       , (j = 1) -> <i> p @ -i]
+                     , (k = 1) -> <_> a ]
+
+
+{-
+
+             v
+        b0 -----> b1
+        ^         ^
+     r0 |         | r1
+        |         |
+        |         |
+        a0 -----> a1
+             u
+-}
+Square (A : U) (a0 a1 b0 b1 : A) (u : Path A a0 a1) (v : Path A b0 b1)
+               (r0 : Path A a0 b0) (r1 : Path A a1 b1) : U
+  = PathP (<i> (Path A (u @ i) (v @ i))) r0 r1
+
+constSquare (A : U) (a : A) (p : Path A a a) : Square A a a a a p p p p =
+  <i j> comp (<_> A) a
+           [ (i = 0) -> <k> p @ j \/ - k
+           , (i = 1) -> <k> p @ j /\ k
+           , (j = 0) -> <k> p @ i \/ - k
+           , (j = 1) -> <k> p @ i /\ k ]
+
+
+
+trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
+
+
+gencomp (A B : U) (P : Path U A B) (a b : A) (c d : B)
+        (p : Path A a b) (q : PathP P a c) (r : PathP P b d) : Path B c d =
+  <i> comp P (p @ i) [ (i = 0) -> q, (i = 1) -> r ]
+
+subst (A : U) (P : A -> U) (a b : A)
+      (p : Path A a b) (e : P a) : P b = transport (<i> P (p @ i)) e
+
+
+J (A : U) (a : A) (P : (b : A) -> Path A a b -> U)
+  (d : P a (refl A a)) (b : A) (p : Path A a b) : P b p =
+  subst B T (a,refl A a) (b,p) (contrSingl A a b p) d
+  where
+  B : U = (b : A) * Path A a b
+  T (y : B) : U = P y.1 y.2
+
+
+isProp (A : U) : U = (x y : A) -> Path A x y
+
+
+isSet (A : U) : U = (x y : A) -> isProp (Path A x y)
+
+propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x)) :
+       isProp ((x : A) -> B x) = rem
+       where
+       rem (f0 f1 : (x : A) -> B x) :
+           Path ((x : A) -> B x) f0 f1 =
+           <i> \(x : A) -> h x (f0 x) (f1 x) @ i
+
+propSet (A : U) (h : isProp A) : isSet A =
+  \(x y : A) (p q : Path A x y) ->
+      <i j> comp (<_> A) x [ (j = 0) -> h x x ,
+                             (j = 1) -> h x y ,
+                             (i = 0) -> h x (p @ j) ,
+                             (i = 1) -> h x (q @ j) ]
+
+propIsProp (A : U) : isProp (isProp A) =
+    \(f g : isProp A) -> <i> \(x y : A) ->
+        propSet A f x y (f x y) (g x y) @ i
+
+
+isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
+
+and (A B : U) : U = (_ : A) * B
+
+inhPropToIsContr (A : U) (p : and A (isProp A)) : isContr A = (p.1 , p.2 p.1)
+isContrToInhProp (A : U) (p : isContr A) : and A (isProp A) =
+          (p.1 , (\(x y : A) -> (transitivity A x p.1 y (sym A p.1 x (p.2 x)) (p.2 y))))
+
+
+isofhlevel (A : U) : nat -> U = split
+  zero -> isContr A
+  suc n -> (a b : A) -> isofhlevel (Path A a b) n
+
+
+isofhlevel1ToProp (A : U) : isofhlevel A (suc zero) -> isProp A = undefined
+propToIsofhlevel1 (A : U) : isProp A -> isofhlevel A (suc zero) = undefined
+
+isofhlevel2ToSet (A : U) : isofhlevel A (suc (suc zero)) -> isSet A = undefined
+setToIsofhlevel2 (A : U) : isSet A -> isofhlevel A (suc (suc zero)) = undefined
+
+
+isContrProp (A : U) (h : isContr A) : isProp A = undefined
