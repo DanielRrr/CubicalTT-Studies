@@ -104,11 +104,15 @@ isofhlevel (A : U) : nat -> U = split
   suc n -> (a b : A) -> isofhlevel (Path A a b) n
 
 
-isofhlevel1ToProp (A : U) : isofhlevel A (suc zero) -> isProp A = undefined
-propToIsofhlevel1 (A : U) : isProp A -> isofhlevel A (suc zero) = undefined
+isofhlevel1ToProp (A : U) : isofhlevel A (suc zero) -> isProp A =
+  \(f : isofhlevel A (suc zero)) (a b : A) -> (f a b).1
+propToIsofhlevel1 (A : U) : isProp A -> isofhlevel A (suc zero) =
+  \(f : isProp A) (a b : A) -> (f a b , ((propSet A f) a b) (f a b))
 
-isofhlevel2ToSet (A : U) : isofhlevel A (suc (suc zero)) -> isSet A = undefined
+isofhlevel2ToSet (A : U) : isofhlevel A (suc (suc zero)) -> isSet A =
+  undefined
+
 setToIsofhlevel2 (A : U) : isSet A -> isofhlevel A (suc (suc zero)) = undefined
 
 
-isContrProp (A : U) (h : isContr A) : isProp A = undefined
+isContrProp (A : U) (h : isContr A) : isProp A = (inhPropToIsContr A h).2
